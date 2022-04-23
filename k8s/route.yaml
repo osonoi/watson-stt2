@@ -1,0 +1,12 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: watson-stt2
+spec:
+  tls:
+    termination: edge
+  to:
+    name: watson-stt2
+    kind: Service
+    weight: 100
+  wildcardPolicy: None

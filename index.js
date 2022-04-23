@@ -30,18 +30,20 @@ const speechToText = new SpeechToTextV1({
 
 // app.use(express.static(path.join(__dirname, 'public')))
 
-// app.get('/', (request, response) => response.send('Hello World!'))
+app.get('/', (request, response) => response.send('Hello World! please goto /upload for speech recognition'))
 
 app.get('/upload', (req, res) => res.sendFile(path.join(__dirname, 'upload.html')))
 
 app.post('/upload', upload.single('file'), function (req, res) {
 //    res.send(req.file.originalname + 'ファイルのアップロードが完了しました。');
-    filename = req.file.originalname;
-    console.log(filename);
-    filename= 'uploads/' + filename;
-    console.log(filename);
+filename = 'uploads/' + req.file.originalname;
+//    filename= 'uploads/' + filename;
+    console.log(filename + 'を認識中');
 
-    var msg = req.body['message'];
+    var search_word = req.body['message'];
+    console.log('検索ワードは' + search_word);
+    var msg = ""    
+    
     const recognizeParams = {
       audio: fs.createReadStream(filename),
       contentType: 'audio/mp3',
@@ -50,7 +52,6 @@ app.post('/upload', upload.single('file'), function (req, res) {
       keywords: ['桃', '男'],
       keywordsThreshold: 0.5,
     };
-    console.log('watson setup');
   
     speechToText.recognize(recognizeParams)
     .then(speechRecognitionResults => {

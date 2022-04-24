@@ -59,6 +59,7 @@ filename = 'uploads/' + req.file.originalname;
       console.log(r.alternatives[0].transcript);
       msg = msg + r.alternatives[0].transcript;
       };
+      msg = msg + '検索ワードは' + search_word;
       var data = {
           title: 'Text',
           content: msg

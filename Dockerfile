@@ -15,6 +15,9 @@ RUN npm ci
 # into the root of the WORKDIR
 COPY . .
 
+RUN chmod -R 775 /upload
+RUN chown -R node:root /upload
+
 # Document that this container exposes something on port 3000
 EXPOSE 3000
 

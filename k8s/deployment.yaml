@@ -20,7 +20,7 @@ spec:
       schedulerName: default-scheduler
       containers:
       - name: watson-stt
-        image: quay.io/ymatsunami/watson-stt2:d75fc98af1d6ba13b87298931695ecb4a6fa45b3
+        image: quay.io/ymatsunami/watson-stt2:4a81e1e9b83ba00ccfd1686f0c4e7f3bf244188e
         ports:
         - name: http
           protocol: TCP

@@ -42,7 +42,8 @@ filename = 'uploads/' + req.file.originalname;
 
     var search_word = req.body['message'];
     console.log('検索ワードは' + search_word);
-    var msg = ""    
+    var msg = "";
+    var str = "";    
     
     const recognizeParams = {
       audio: fs.createReadStream(filename),
@@ -57,16 +58,33 @@ filename = 'uploads/' + req.file.originalname;
     .then(speechRecognitionResults => {
     for (r of speechRecognitionResults.result.results){
       console.log(r.alternatives[0].transcript);
-      msg = msg + r.alternatives[0].transcript;
+      str = str + r.alternatives[0].transcript;
       };
-      msg = msg.replace(/\s+/g, "");
-      msg = msg + '<br>' + '検索ワードは' + search_word;
+      str = str.replace(/\s+/g, "");
+
+//      var search_word = 'おじいさん';
+      var search_word_nagasa = search_word.length;
+      var moji_nagasa = str.length;
+      var point = 0;
+
+      msg = str + '<br>' + '検索ワードは' + search_word + '<br>';
+
+      for (let i = 1; i < moji_nagasa; i++) {
+        var result = str.indexOf(search_word, i);
+        if(result !== -1) {
+          console.log (str.substring( result-5, result+search_word_nagasa+5));
+          msg = msg + str.substring( result-5, result+search_word_nagasa+5) + '<br>';
+          i=i + result;
+        }
+      }
+
+
+      
       var data = {
           title: 'Text',
           content: msg
         };
         res.send(msg);
-    // res.render('hello2', data) 
     }
     
     )

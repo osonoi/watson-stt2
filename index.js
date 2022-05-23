@@ -25,24 +25,19 @@ const speechToText = new SpeechToTextV1({
     serviceUrl: 'https://api.us-south.speech-to-text.watson.cloud.ibm.com/instances/17a8e5b1-10e2-43d6-8533-00cf335fd628',
 });
   
-  // const upload = multer({ dest: 'public/uploads/' })
-  const upload = multer({ storage: storage })
-
-// app.use(express.static(path.join(__dirname, 'public')))
+const upload = multer({ storage: storage })
 
 app.get('/', (request, response) => response.send('Hello World! please goto /upload for speech recognition'))
 
 app.get('/upload', (req, res) => res.sendFile(path.join(__dirname, 'upload.html')))
 
 app.post('/upload', upload.single('file'), function (req, res) {
-//    res.send(req.file.originalname + 'ファイルのアップロードが完了しました。');
 filename = 'uploads/' + req.file.originalname;
-//    filename= 'uploads/' + filename;
     console.log(filename + 'を認識中');
 
     var search_word = req.body['message'];
     console.log('検索ワードは' + search_word);
-    var msg = "";
+    var msg = "Wtason STTで認識したのは<br>";
     var str = "";    
     
     const recognizeParams = {
@@ -62,22 +57,36 @@ filename = 'uploads/' + req.file.originalname;
       };
       str = str.replace(/\s+/g, "");
 
-//      var search_word = 'おじいさん';
       var search_word_nagasa = search_word.length;
       var moji_nagasa = str.length;
-      var point = 0;
-
-      msg = str + '<br>' + '検索ワードは' + search_word + '<br>';
+      var j = 0;
+      let s_array = [0];
+      let e_array = [0];
+      msg = msg + str + '<br><br>' + '検索ワードは' + search_word + '<br>';
 
       for (let i = 1; i < moji_nagasa; i++) {
         var result = str.indexOf(search_word, i);
+      
         if(result !== -1) {
-          console.log (str.substring( result-5, result+search_word_nagasa+5));
-          msg = msg + str.substring( result-5, result+search_word_nagasa+5) + '<br>';
+          j=j +1;
+          s_array.push(result-5);
+          e_array.push(result+search_word_nagasa+5);
+          msg = msg + str.substring(s_array[j], e_array[j]) + '<br>';
           i=i + result;
         }
       }
-
+      msg = msg + '<br>' + '文中の位置は' + '<br>';
+      var k = 1;
+      for (let i = 0; i < moji_nagasa; i++) {
+      if(i==s_array[k]) {msg = msg + '<<-' + str.substring(i,i+1)}
+      else  if(i==e_array[k]) {
+        msg = msg + '->>' + str.substring(i,i+1);
+        k = k +1;
+      }
+      else {
+        msg = msg + str.substring(i,i+1);
+      }
+      }
 
       
       var data = {

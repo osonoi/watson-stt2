@@ -36,7 +36,8 @@ filename = 'uploads/' + req.file.originalname;
     console.log(filename + 'を認識中');
 
     var search_word = req.body['message'];
-    console.log('検索ワードは' + search_word);
+    if (search_word == "") {console.log('検索ワードはなしですね')}
+    else console.log('検索ワードは' + search_word);
     var msg = "Wtason STTで認識したのは<br>";
     var str = "";    
     
@@ -44,7 +45,6 @@ filename = 'uploads/' + req.file.originalname;
       audio: fs.createReadStream(filename),
       contentType: 'audio/mp3',
       model: 'ja-JP_NarrowbandModel',
-    //  wordAlternativesThreshold: 0.9,
       keywords: ['桃', '男'],
       keywordsThreshold: 0.5,
     };
@@ -62,8 +62,10 @@ filename = 'uploads/' + req.file.originalname;
       var j = 0;
       let s_array = [0];
       let e_array = [0];
-      msg = msg + str + '<br><br>' + '検索ワードは' + search_word + '<br>';
 
+      if (search_word == "") {msg = msg + str + '<br><br>' + '検索ワードはなしですね'}
+      else {
+        msg = msg + str + '<br><br>' + '検索ワードは' + search_word + '<br>';
       for (let i = 1; i < moji_nagasa; i++) {
         var result = str.indexOf(search_word, i);
       
@@ -73,6 +75,7 @@ filename = 'uploads/' + req.file.originalname;
           e_array.push(result+search_word_nagasa+5);
           msg = msg + str.substring(s_array[j], e_array[j]) + '<br>';
           i=i + result;
+          }
         }
       }
       msg = msg + '<br>' + '文中の位置は' + '<br>';
